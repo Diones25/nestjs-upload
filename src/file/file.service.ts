@@ -36,7 +36,7 @@ export class FileService {
       throw new BadRequestException('Nenhum arquivo foi enviado')
     }
 
-    // Filtra arquivos inválidos (opcional)
+    // Filtra arquivos inválidos 
     const validFiles = files.filter(file =>
       file &&
       file.originalname &&
