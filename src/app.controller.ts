@@ -47,26 +47,13 @@ export class AppController {
     }
   }
 
-  @UseInterceptors(FilesInterceptor('files'))
   @Post('files')
-  async uploadFiles(@UploadedFiles() files: Express.Multer.File[]) {
-
-    return files;
+  @UseInterceptors(FilesInterceptor('files', 10, new FileService().getMulterOptions()))
+  async uploadMultiple(@UploadedFiles() files: Express.Multer.File[]) {
+    try {
+      return this.fileService.processUploadedFiles(files);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
-
-  // @UseInterceptors(FileFieldsInterceptor([
-  //   {
-  //     name: 'photo',
-  //     maxCount: 1,
-  //   },
-  //   {
-  //     name: 'documents',
-  //     maxCount: 10,
-  //   }
-  // ]))
-  // @Post('files-fields')
-  // async uploadFilesFields(@UploadedFiles() files: { photo?: Express.Multer.File, documents?: Express.Multer.File[] }) {
-
-  //   return files;
-  // }
 }
