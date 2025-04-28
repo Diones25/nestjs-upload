@@ -1,13 +1,16 @@
 import {
   BadRequestException,
   Controller,
+  FileTypeValidator,
+  MaxFileSizeValidator,
+  ParseFilePipe,
   Post,
   UploadedFile,
   UploadedFiles,
   UseInterceptors
 } from '@nestjs/common';
 import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { join } from 'path';
+import { extname, join } from 'path';
 import { FileService } from './file/file.service';
 
 @Controller('upload')
@@ -18,9 +21,23 @@ export class AppController {
 
   @UseInterceptors(FileInterceptor('file'))
   @Post()
-  async upload(@UploadedFile() file: Express.Multer.File) {
+  async upload(
+    @UploadedFile(new ParseFilePipe({
+      validators: [
+        new FileTypeValidator({
+          fileType: 'image/jpeg|image/jpg|image/png',
+        }),
+        new MaxFileSizeValidator({
+          maxSize: 5 * 1024 * 1024, // 5MB
+        })
+      ],
+    })) file: Express.Multer.File
+  ) {
 
-    const path = join(__dirname, '../', 'storage', 'uploads', `photo-${Date.now()}.png`);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const ext = extname(file.originalname);
+    
+    const path = join(__dirname, '../', 'storage', 'uploads', `${file.fieldname}-${uniqueSuffix}${ext}`);
 
     try {
       await this.fileService.upload(file, path);
@@ -37,19 +54,19 @@ export class AppController {
     return files;
   }
 
-  @UseInterceptors(FileFieldsInterceptor([
-    {
-      name: 'photo',
-      maxCount: 1,
-    },
-    {
-      name: 'documents',
-      maxCount: 10,
-    }
-  ]))
-  @Post('files-fields')
-  async uploadFilesFields(@UploadedFiles() files: { photo?: Express.Multer.File, documents?: Express.Multer.File[] }) {
+  // @UseInterceptors(FileFieldsInterceptor([
+  //   {
+  //     name: 'photo',
+  //     maxCount: 1,
+  //   },
+  //   {
+  //     name: 'documents',
+  //     maxCount: 10,
+  //   }
+  // ]))
+  // @Post('files-fields')
+  // async uploadFilesFields(@UploadedFiles() files: { photo?: Express.Multer.File, documents?: Express.Multer.File[] }) {
 
-    return files;
-  }
+  //   return files;
+  // }
 }
