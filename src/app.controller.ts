@@ -12,6 +12,8 @@ import {
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { extname, join } from 'path';
 import { FileService } from './file/file.service';
+import { mkdir, access } from 'fs/promises';
+import { constants } from 'fs';
 
 @Controller('upload')
 export class AppController {
@@ -34,12 +36,18 @@ export class AppController {
     })) file: Express.Multer.File
   ) {
 
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = extname(file.originalname);
-    
-    const path = join(__dirname, '../', 'storage', 'uploads', `${file.fieldname}-${uniqueSuffix}${ext}`);
+    const uploadsDir = join(__dirname, '../', 'storage', 'uploads');
 
     try {
+      // Verifica se o diretório existe, se não existir cria
+      await access(uploadsDir, constants.F_OK).catch(async () => {
+        await mkdir(uploadsDir, { recursive: true });
+      });
+
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const ext = extname(file.originalname);
+      const path = join(uploadsDir, `${file.fieldname}-${uniqueSuffix}${ext}`);
+
       await this.fileService.upload(file, path);
       return { sucess: true }
     } catch (error) {
