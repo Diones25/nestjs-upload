@@ -1,4 +1,4 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { AppService } from './app.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
@@ -17,8 +17,11 @@ export class AppController {
 
     const path = join(__dirname, '../', 'storage', 'uploads', `photo-${Date.now()}.png`);
 
-    this.fileService.upload(file, path);
-
-    return { sucess: true }
+    try {
+      await this.fileService.upload(file, path);
+      return { sucess: true }
+    } catch (error) {
+      throw new BadRequestException('Aconteceu um erro: ', error.message);
+    }
   }
 }
