@@ -30,10 +30,26 @@ export class FileService {
     };
   }
 
-  async processUploadedFiles(files: Express.Multer.File[]) {
+  async processUploadedFiles(files: Express.Multer.File[] | undefined) {
+    // Verifica se files é undefined ou não é um array
+    if (!files || !Array.isArray(files)) {
+      throw new BadRequestException('Nenhum arquivo foi enviado')
+    }
+
+    // Filtra arquivos inválidos (opcional)
+    const validFiles = files.filter(file =>
+      file &&
+      file.originalname &&
+      file.filename &&
+      file.path &&
+      file.size !== undefined
+    );
+
     return {
-      message: 'Arquivos enviados com sucesso!',
-      files: files.map(file => ({
+      message: validFiles.length > 0
+        ? 'Arquivos processados com sucesso!'
+        : 'Nenhum arquivo válido foi recebido',
+      files: validFiles.map(file => ({
         originalName: file.originalname,
         fileName: file.filename,
         path: file.path,
