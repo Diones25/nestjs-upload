@@ -17,6 +17,8 @@ export class AppController {
 
     const path = join(__dirname, '../', 'storage', 'uploads', `photo-${Date.now()}.png`);
 
-    return this.fileService.upload(file, path);
+    this.fileService.upload(file, path);
+
+    return { sucess: true }
   }
 }
