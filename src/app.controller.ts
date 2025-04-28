@@ -9,7 +9,7 @@ import {
   UploadedFiles,
   UseInterceptors
 } from '@nestjs/common';
-import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { extname, join } from 'path';
 import { FileService } from './file/file.service';
 
