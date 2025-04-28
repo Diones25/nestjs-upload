@@ -1,0 +1,109 @@
+{
+	"info": {
+		"_postman_id": "671b132f-80c4-447a-9524-ea4e9329c27b",
+		"name": "Upload Nest.js",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15952256",
+		"_collection_link": "https://diones32.postman.co/workspace/Workspace-Diones~6db78dad-ecc5-419b-926f-36f6909bb4c5/collection/15952256-671b132f-80c4-447a-9524-ea4e9329c27b?action=share&source=collection_link&creator=15952256"
+	},
+	"item": [
+		{
+			"name": "Upload Nest.js",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/F:/Usuários/DIONES-PC/Pictures/20211205_150616.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/upload",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload de Multiplos arquivos Nest.js",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": [
+								"/F:/Usuários/DIONES-PC/Pictures/20211205_150616.jpg",
+								"/F:/Usuários/DIONES-PC/Pictures/BannerLU.jpeg",
+								"/F:/Usuários/DIONES-PC/Pictures/big-sur-wallpaper-2.png"
+							]
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/upload/files",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"upload",
+						"files"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}
